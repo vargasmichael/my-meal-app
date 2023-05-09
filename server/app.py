@@ -312,17 +312,29 @@ class All_Meal_Plan(Resource):
 
 
 class Meal_Plan_By_Id(Resource):
-    def get(self):
+    def get(self, id):
+        print(session)
         user_id = session.get('user_id')
         if not user_id:
             return make_response("User not logged in", 401)
         
-        meal_plan = Meal_Plan.query.filter_by(user_id=user_id).first()
-        if not meal_plan:
+        meal_plans = Meal_Plan.query.filter_by(user_id=user_id).all()
+        if not meal_plans:
             return make_response("Meal Plan not found", 404)
         
-        response = make_response(meal_plan.to_dict(), 200)
+        meal_plan_dicts = [mp.to_dict() for mp in meal_plans]
+        response = make_response(meal_plan_dicts, 200)
         return response
+    
+    def post(self, id):
+        data = request.get_json()
+        print(data, "Preston ")
+        new_meal_plan = Meal_Plan(
+            user_id = data["user_id"],
+            meal_id = data['meal_id'],
+        )
+        db.session.add(new_meal_plan)
+        db.session.commit()
     
     def delete(self, id):
         meal_plan = Meal_Plan.query.filter_by(id=id).first()
@@ -416,7 +428,7 @@ api.add_resource(Ingredient_By_Id, '/api/ingredients/<int:id>')
 api.add_resource(All_Meal_Plan, '/api/meal_plan')
 api.add_resource(Meal_Plan_By_Id, '/api/meal_plan/<int:id>')    
 api.add_resource(All_Meal_Ingredient, '/api/meal_ingredients')
-api.add_resource(Meal_Ingredient_By_Id, '/meal_ingredients/<int:id>')
+api.add_resource(Meal_Ingredient_By_Id, '/api/meal_ingredients/<int:id>')
 
 
 

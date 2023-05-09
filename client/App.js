@@ -4,6 +4,9 @@ import { View, StyleSheet } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import TabNavigator from './components/TabNavigator';
+
 
 
 // import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
@@ -18,39 +21,15 @@ import Meals from './components/Meals';
 import Mealform from './components/Mealform';
 import Checksession from './components/Checksession';
 import Editmealform from './components/Editmealform';
-
-
-
-
-function HomeScreen({ navigation }) {
-
-  
-
-return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button color="#f4511e" style={styles.button} title="Login here!" onPress={() => {navigation.navigate('Login')}}/>
-        <Button color="#f4511e" style={styles.button} title="Sign Up here!" onPress={() => {navigation.navigate('Signup')}}/>
-        <Button color="#f4511e" style={styles.button} title="Your Meal Plan!" onPress={() => {navigation.navigate('Mealplan')}}/>
-        <Button color="#f4511e" style={styles.button} title="Your Meals!" onPress={() => {navigation.navigate('Meals')}}/>
-        <Button color="#f4511e" style={styles.button} title="Enter a New Meal!" onPress={() => {navigation.navigate('Mealform')}}/>
-        <Button color="#f4511e" style={styles.button} title="Check Session!" onPress={() => {navigation.navigate('Checksession')}}/>
-        <Button color="#f4511e" style={styles.button} title="Edit Meal Form!" onPress={() => {navigation.navigate('Editmealform')}}/>
-      </View>
-    
-    
-  );
-
-}
-
-
-
-const Stack = createNativeStackNavigator();
+import HomeScreen from './components/Homescreen';
+import Header from './components/Header';
 
 
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-
+  const [user, setU] = useState(null);
+  
   
   function handleLogout(props) {
     fetch("/api/logout", {
@@ -58,16 +37,23 @@ function App() {
     }).then((r) => {
       console.log("User logged out");
       setLoggedIn
-      })
-    };
-
-   
+    })
+  };
+  
+  
+  const Stack = createNativeStackNavigator();
   
 
   return (
+
+  
+
+
+
+
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: "My Home", headerStyle: {
+      <Stack.Navigator initialRouteName='HomeScreen'>
+        <Stack.Screen name="Home" component={TabNavigator} options={{ title: "My Home", headerStyle: {
           backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
             fontWeight: 'bold'},
             headerRight: () => (
@@ -78,12 +64,16 @@ function App() {
               />
             )
           
-          }}/>
-        <Stack.Screen name="Login" component={Login} options={{ title: "Login", headerStyle: {
-        backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
-          fontWeight: 'bold',
-        }
-      }}/>
+          }}>
+          </Stack.Screen>
+        <Stack.Screen name="Login"  options={{ title: "Login", headerStyle: {
+          backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
+            fontWeight: 'bold',
+          }
+        }}
+        
+        >
+        {props=>{return <Login setU={setU} user={user} {...props}/>}}</Stack.Screen>
         <Stack.Screen name="Signup" component={Signup} options={{ title: "Signup", headerStyle: {
         backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
           fontWeight: 'bold',

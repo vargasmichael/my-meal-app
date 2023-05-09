@@ -8,8 +8,8 @@ function Checksession(props) {
     function handlesession() {
         fetch('/api/checksession')
         .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
+        .then(currentUser => {
+            console.log('Success:', currentUser);
         })
      }
 

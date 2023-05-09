@@ -3,7 +3,8 @@ import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 import Editmealform from './Editmealform';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { set } from 'react-native-reanimated';
 
 
 
@@ -11,10 +12,21 @@ function handleFetch() {
   return fetch('api/meals')
     .then(response => response.json())
     .then(data => {
-      console.log('Success:', data);
+      // console.log('Success:', data);
       return data;
     });
 }
+
+function handleUserFetch() {
+  return fetch(`api/users`)
+    .then(response => response.json())
+    .then(data => {
+      // console.log('Success:', data);
+      return data;
+    });
+}
+
+
 
 function Meals(props) {
   // const navigation = useNavigation();
@@ -23,6 +35,12 @@ function Meals(props) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedMeal, setSelectedMeal] = useState(null);
   const categories = ['All', 'Breakfast', 'Lunch', 'Dinner', 'Snack'];
+  const navigation = useNavigation();
+  const [user, setUser] = useState([]);
+  const [currentUser, setCurrentUser] = useState([]);
+
+  // console.log(user);
+  // console.log(setUser)
 
   useEffect(() => {
     handleFetch().then(data => {
@@ -30,33 +48,60 @@ function Meals(props) {
     });
   }, []);
 
+  useEffect(() => {
+    handleUserFetch().then(data => {
+      setUser(data);
+      handlesession();
+      // console.log(data);
+    });
+  }, [])
+
+  function handlesession() {
+    fetch('/api/checksession')
+    .then(response => response.json())
+    .then(currentUser => {
+        // console.log('current User', currentUser);
+        setCurrentUser(currentUser);
+    })
+  }
+
   
+
   function handleAddToMealPlan(dish) {
+    handlesession();
+    // console.log(dish);
     const mealPlanData = {
-      user_id: dish.user_id,
-      meal_id: dish.meal_id,
-      day_of_week: dish.day_of_week,
-      meal_time: dish.meal_time
+      // user_id: user.id,
+      meal_id: dish.id,
+      user_id: currentUser.id,
+      
        
     };
   
-    fetch(`/api/meal_plan/${dish.id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(mealPlanData)
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log('Meal added to meal plan!');
-      } else {
-        console.log('Failed to add meal to meal plan.');
-      }
-    })
-    .catch(error => {
-      console.error('Error adding meal to meal plan:', error);
-    });
+    fetch(`/api/meals/${dish.id}`, {
+      method: 'GET',
+     })
+    .then(response => response.json())
+    .then(resource => {
+      // console.log(resource);
+      // console.log(mealPlanData)
+      fetch(`/api/meal_plan/${currentUser.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(mealPlanData),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        return data;
+      })
+    }
+      
+    )
+    
+    
   }
 
   function handleCategoryChange(value) {
@@ -77,7 +122,7 @@ function handleEditMeal(dish) {
 
 function handleSaveChanges(newDish) {
   const updatedDishes = dishes.map((dish) => 
-    dish.id === newDish.id ? newDish : dish
+    dish?.id === newDish.id ? newDish : dish
   );
   setDishes(updatedDishes);
 
@@ -123,7 +168,7 @@ function handleDelete() {
     .then(response => {
         if (response.ok) {
         console.log('Meal deleted!');
-        navigation.goBack();
+        
         } else {
         console.log('Failed to delete meal.');
         }
@@ -137,9 +182,10 @@ function handleDelete() {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Meals</Text>
-      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.navigate('Home')} />
+      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.navigate('Homescreen')} />
       <Button color="#f4511e" style={styles.button} title="Go back" onPress={() => props.navigation.goBack()} />
       <Button color="#f4511e" style={styles.button} title="Get Meals" onPress={handleFetch} />
+      <Button color="#f4511e" style={styles.button} title="Go To Meal Plan" onPress={() => props.navigation.navigate('Mealplan')} />
       <Picker
         selectedValue={selectedCategory}
         onValueChange={handleCategoryChange}
@@ -172,7 +218,8 @@ function handleDelete() {
             <Text style={{ fontSize: 14, color: '#666', marginBottom: 5 }}>{dish.description}</Text>
             <Text style={{ fontSize: 12, color: '#999' }}>{dish.category}</Text>
             <View style={styles.buttonContainer}>
-            <Button  color="#f4511e" style={styles.button} title="Add to Meal Plan" onPress={() => handleAddToMealPlan(dish)} />
+            <Button  color="#f4511e" style={styles.button} title="Add to Meal Plan" onPress={() => handleAddToMealPlan(dish)} onPressIn={() => handlesession()
+            }/>
             <Button  color="#f4511e" style={styles.button} title="Edit Meal" onPress={() => handleEditMeal(dish)} />
             </View>
           </View>

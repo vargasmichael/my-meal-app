@@ -1,92 +1,101 @@
 import  React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { useNavigation } from "react-router-dom";
-// import { Animated } from 'react-native';
+import PopupDialog from 'react-native-popup-dialog';
 
-function Login(props) {
-const [username, setUsername] = useState("");
-const [password, setPassword] = useState("");
-const [errors, setErrors] = useState([]);
-const [isLoading, setIsLoading] = useState(false);
- 
-function handleLogin(props) {
-  // setIsLoading(true);
-  fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  })
-    .then((r) => r.json())
-    .then((data) => {
-      console.log("Success:", data);
-      setUsername("");
-      setPassword("");
-    });
-    
+function Login({ setU, user}) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
+  function handleLogin(props) {
+    setIsLoading(true);
+    fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log("Success:", data);
+        console.log(setU);
+        // setU(data);
+        console.log(data);
+        setUsername("");
+        setPassword("");
+        setShowPopup(true);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setIsLoading(false);
+      });
   }
+
   function handleLogout(props) {
     fetch("/api/logout", {
       method: "DELETE",
     }).then((r) => {
       console.log("User logged out");
-      })
-    };
-  
+    })
+  };
 
-
-
-
-return (
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Text style={styles.text}>Login</Text>
-    {/* <Button title="Need to signup?" onPress={() => props.navigation.navigate('Signup')}/> */}
-    <TextInput
-      style={styles.form}
-      autoCapitalize="none"
-      autoCompleteType="username"
-      value={username}
-      onChangeText={(text) => setUsername(text)}
-      placeholder="Username"
-      clearTextOnFocus={true}
-    />
-    <TextInput
-      style={styles.form}
-      secureTextEntry={true}
-      autoCapitalize="none"
-      autoCompleteType="password"
-      value={password}
-      onChangeText={(text) => setPassword(text)}
-      placeholder="Password"
-      clearTextOnFocus={true}
-    />
-    <Button color="#f4511e" style={styles.button} title="Login" onPress={handleLogin}/>
-    <Button color="#f4511e" style={styles.button} title="Logout" onPress={handleLogout}/>
-    <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.push('Home')}/>
-  </View>
-);
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={styles.text}>Login</Text>
+      <TextInput
+        style={styles.form}
+        autoCapitalize="none"
+        autoCompleteType="username"
+        value={username}
+        onChangeText={(text) => setUsername(text)}
+        placeholder="Username"
+        clearTextOnFocus={true}
+      />
+      <TextInput
+        style={styles.form}
+        secureTextEntry={true}
+        autoCapitalize="none"
+        autoCompleteType="password"
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+        placeholder="Password"
+        clearTextOnFocus={true}
+      />
+      <Button color="#f4511e" style={styles.button} title="Login" onPress={handleLogin} disabled={isLoading}/>
+      <Button color="#f4511e" style={styles.button} title="Logout" onPress={handleLogout}/>
+      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.push('Home')}/>
+      <PopupDialog
+        visible={showPopup}
+        onTouchOutside={() => {
+          setShowPopup(false);
+        }}
+      >
+        <View>
+          <Text>{username} logged in</Text>
+        </View>
+      </PopupDialog>
+    </View>
+  );
 }
+
 const styles = StyleSheet.create({
   button: {
-    
     borderRadius: 15,
     padding: 10,
     marginBottom: 10,
     paddingHorizontal: 10,
     width: 200,
-    
   },
   title: {
     color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    
   },
   form: {
     height: 40,
@@ -103,7 +112,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
 
 export default Login;
 
