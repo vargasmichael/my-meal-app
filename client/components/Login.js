@@ -45,7 +45,7 @@ function Login({ setU, user}) {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.container}>
       <Text style={styles.text}>Login</Text>
       <TextInput
         style={styles.form}
@@ -68,7 +68,7 @@ function Login({ setU, user}) {
       />
       <Button color="#f4511e" style={styles.button} title="Login" onPress={handleLogin} disabled={isLoading}/>
       <Button color="#f4511e" style={styles.button} title="Logout" onPress={handleLogout}/>
-      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.push('Home')}/>
+      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => {props.navigation.push('Homescreen')}}/>
       <PopupDialog
         visible={showPopup}
         onTouchOutside={() => {
@@ -84,6 +84,14 @@ function Login({ setU, user}) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabNavigator: {
+    zIndex: 10,
+  },
   button: {
     borderRadius: 15,
     padding: 10,
@@ -107,13 +115,15 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#f4511e',
-    fontSize: 20,
+    fontSize:     20,
     fontWeight: 'bold',
     textAlign: 'center',
   },
 });
 
 export default Login;
+
+
 
 
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 import { Text, Card, Button, Icon } from '@rneui/themed';
 import { View, StyleSheet, Picker, ScrollView} from 'react-native';
+import EditMealPlanForm from './Editmealplanform';
 
 
 function Mealplan(props) {
@@ -16,8 +17,11 @@ function Mealplan(props) {
 
   useEffect(() => {
     handlesession();
-    handleFetch(currentUser.id);
   }, []);
+
+  useEffect(() => {
+    handleFetch(currentUser.id);
+  }, [currentUser]);
 
   function handlesession() {
     fetch('/api/checksession')
@@ -25,10 +29,14 @@ function Mealplan(props) {
       .then(currentUser => {
         console.log('current User', currentUser);
         setCurrentUser(currentUser);
+        if (currentUser) {
+          handleFetch(currentUser.id);
+        }
       })
-      .then(() => handleFetch(currentUser.id));
-  
-    }
+      .catch(error => {
+        console.log('Error checking session', error);
+      });
+  }
   function handleFetch(id) {
     const url = id ? `/api/meal_plan/${id}` : '/api/meal_plan';
     setLoading(true);
@@ -48,38 +56,122 @@ function Mealplan(props) {
 
   
   function MealplanCard({ mp }) {
+    // console.log(mp)
     const [meal, setMeal] = useState({});
     const [showEditForm, setShowEditForm] = useState(false);
     const categories = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  
+    const [selectedPlan, setSelectedPlan] = useState(null);
+    
+    
     useEffect(() => {
       fetch(`/api/meals/${mp.meal_id}`)
-        .then(response => response.json())
-        .then(meal => {
-          console.log('meal', meal);
-          setMeal(meal);
-        })
-        .catch(error => {
-          console.log('Error getting meal', error);
-        });
+      .then(response => response.json())
+      .then(meal => {
+        //  console.log('meal', meal);
+        setMeal(meal);
+      })
+      .catch(error => {
+        // console.log('Error getting meal', error);
+      });
     }, [mp.meal_id]);
+    
+  // this is to edit the meal plan
+  const [editPlan, setEditPlan] = useState(false);
 
+  function handleEditPlan(mp) {
+        setEditPlan(true);
+        setSelectedPlan(mp);
+      }
+
+      function handleSavePlan(newPlan) {
+        console.log(newPlan)
+        const updatedPlan = mealplan.map((mp) => {
+          return mp?.id === newPlan.id ? newPlan : mp;
+        })
+        
+        setMealplan(updatedPlan);
+        console.log('newPlan', newPlan.id);
+      
+      
+        setEditPlan(false);
+        setSelectedPlan([]);
+      
+        const mealPlanData = {
+          user_id: newPlan.user_id,
+          day_of_week: newPlan.dayOfWeek,
+          meal_time: newPlan.mealTime,
+          meal_id: newPlan.meal_id,
+        };
+      
+        fetch(`/api/meal_plan/${mp.id}`, {
+          
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },  
+          body: JSON.stringify(mealPlanData),
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Success:', data);
+            handleFetch(currentUser.id);
+          })
+          .catch(error => {
+            console.log('Error updating meal plan', error);
+          });
+      }
+      
+      function handleDeletePlan(newPlan) {
+        const updatedPlan = mealplan.filter(mp => mp.id !== selectedPlan.id);
+      
+        setMealplan(updatedPlan);
+        setEditPlan(false);
+        setSelectedPlan(null);
+      
+        fetch(`/api/meal_plan/${selectedPlan.id}`, {
+          method: 'DELETE',
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Success:', data);
+            handleFetch(currentUser.id);
+          })
+          .catch(error => {
+            console.log('Error deleting meal plan', error);
+          });
+      }
+      
+
+
+      
    
   
-    return (
-     
-      <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        <Text style={styles.title}>{mp.day_of_week} - {mp.meal_time}</Text>
-        <Text style={styles.description}>{meal.name}</Text>
-        <Text style={styles.category}>{meal.category}</Text>
-        <Text style={styles.description}>{meal.description}</Text>
-      </View>
-    </View>
-    
-          
-    );
-  }
+      return (
+        <View style={styles.cardContainer}>
+          {editPlan ? (
+            <EditMealPlanForm mp={mp} onSaveChanges={handleSavePlan} onDelete={handleEditPlan} />
+          ) : (
+            <>
+              <Text style={styles.title}>{mp.day_of_week} - {mp.meal_time}</Text>
+              <Text style={styles.description}>{meal.name}</Text>
+              <Text style={styles.category}>{meal.category}</Text>
+              <Text style={styles.description}>{meal.description}</Text>
+              <Button color="#f4511e" style={styles.button} title="Edit Plan" onPress={handleEditPlan} />
+              <Button color="#f4511e" style={styles.button} title="Delete Plan" onPress={handleDeletePlan} />
+            </>
+          )}
+        </View>
+      );
+    }
+  
+   
+  
+  
+  
+  
+  
+  
+  
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -104,7 +196,8 @@ function Mealplan(props) {
       />
       {loading && <Text style={styles.loading}>Loading...</Text>}
       <ScrollView style={{ maxHeight: '80%', marginTop: 20, paddingHorizontal: 10 }}>
-      {mealplan.map(mp => <MealplanCard key={mp.id} mp={mp} />)}
+      {mealplan && mealplan.length > 0 && mealplan.map(mp => mp && <MealplanCard key={mp.id} mp={mp} />)}
+
       </ScrollView>
     </View>
   );
@@ -160,52 +253,5 @@ const styles = StyleSheet.create({
  
 });
 
+
 export default Mealplan;
-
-
-
- // const [editPlan, setEditPlan] = useState(false);
-    // const [selectedPlan, setSelectedPlan] = useState(null);
-
-    // function handleEditPlan() {
-    //   setEditPlan(true);
-    //   setSelectedPlan(mp);
-    // }
-
-    // const mealPlanData = {
-    //   day_of_week: selectedDayOfWeek,
-    //   meal_time: selectedMealTime,
-    // };
-
-    // fetch(`/api/meals/${mp.meal_id}`, {
-    //   method: 'GET',
-    // })
-    //   .then(response => response.json())
-    //   .then(resource => {
-    //     fetch(`/api/meal_plan/${mp.id}`, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(mealPlanData),
-    //     })
-    //       .then(response => response.json())
-    //       .then(data => {
-    //         console.log('Success:', data);
-    //         return data;
-    //       })
-    //   })
-
-    // function handleDeletePlan() {
-    //   fetch(`/api/meal_plan/${mp.id}`, {
-    //     method: 'DELETE',
-    //   })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       console.log('Success:', data);
-    //       handleFetch(currentUser.id);
-    //     })
-    //     .catch(error => {
-    //       console.error('Error:', error);
-    //     });
-    // }
