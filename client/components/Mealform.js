@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { View, TextInput, Picker, StyleSheet } from 'react-native';
+import { View, TextInput, Picker, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 
 // import Form from 'react-native-form';
@@ -28,8 +28,9 @@ function Mealform (props) {
     }
 
     return (
-        
+          <View style={styles.container}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+               <Image source={require('../assets/icon2.png')} style={styles.logo} />
               <Text style={styles.text}>Enter a Meal</Text>
               <TextInput
                 style={styles.form}
@@ -57,14 +58,24 @@ function Mealform (props) {
                     return <Picker.Item label={item} value={item} key={index} />;
                 })}
                 </Picker>
-              <Button color="#f4511e" style={styles.button} title="Enter" onPress={handleSubmit}/>
-              <Button color="#f4511e" style={styles.button} title="Meal Plan" onPress={() => props.navigation.push('Mealplan')}/>
+                <View style={styles.buttonContainer}>
+              <Button color="#daa520" style={styles.button} title="Enter" onPress={handleSubmit}/>
+              <Button color="#daa520" style={styles.button} title="Meal Plan" onPress={() => props.navigation.push('Mealplan')}/>
             </View>
+          </View>
+          </View>
           );
           
     }
     
     const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: 'url("https://wallpapers.com/images/high/green-gradient-color-background-cm7l1ky0cdimtvjw.webp")',
+        backgroundSize: 'cover',
+      },
       button: {
         
         borderRadius: 15,
@@ -74,6 +85,15 @@ function Mealform (props) {
         width: 200,
         
       },
+      buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      logo: {
+        width: 200,
+        height: 200,
+        marginBottom: 20,
+      },
       title: {
         color: 'black',
         fontSize: 16,
@@ -82,26 +102,29 @@ function Mealform (props) {
         
       },
       form: {
-        height: 40,
+        height: 60,
         borderColor: "black",
         borderWidth: 5,
-        width: 200,
+        width: 300,
         marginBottom: 10,
         paddingHorizontal: 10,
+        backgroundColor: '#dcdcdc',
       },
       formDescription: {
-        height: 100,
+        height: 200,
         borderColor: "black",
         borderWidth: 5,
-        width: 200,
+        width: 300,
         marginBottom: 10,
         paddingHorizontal: 10,
+        backgroundColor: "#dcdcdc",
         
       },
       text: {
-        color: '#f4511e',
-        fontSize: 20,
+        color: '#daa520',
+        fontSize: 30,
         fontWeight: 'bold',
+        marginBottom: 20,
         },
     });
 

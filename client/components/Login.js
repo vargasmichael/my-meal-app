@@ -1,7 +1,8 @@
 import  React, { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 import PopupDialog from 'react-native-popup-dialog';
+import { useNavigation } from '@react-navigation/native';
 
 function Login({ setU, user}) {
   const [username, setUsername] = useState("");
@@ -9,8 +10,11 @@ function Login({ setU, user}) {
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const navigation = useNavigation();
 
-  function handleLogin(props) {
+  function handleLogin() {
+    
+
     setIsLoading(true);
     fetch("/api/login", {
       method: "POST",
@@ -29,6 +33,7 @@ function Login({ setU, user}) {
         setPassword("");
         setShowPopup(true);
         setIsLoading(false);
+        navigation.navigate('Mealplan');
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -46,6 +51,7 @@ function Login({ setU, user}) {
 
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/icon2.png')} style={styles.logo} />
       <Text style={styles.text}>Login</Text>
       <TextInput
         style={styles.form}
@@ -66,9 +72,11 @@ function Login({ setU, user}) {
         placeholder="Password"
         clearTextOnFocus={true}
       />
-      <Button color="#f4511e" style={styles.button} title="Login" onPress={handleLogin} disabled={isLoading}/>
-      <Button color="#f4511e" style={styles.button} title="Logout" onPress={handleLogout}/>
-      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => {props.navigation.push('Homescreen')}}/>
+      <View style={styles.buttonContainer}>
+      <Button color="#daa520" style={styles.button} title="Login" onPress={handleLogin} />
+      <Button color="#daa520" style={styles.button} title="Logout" onPress={handleLogout}/>
+      {/* <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => {props.navigation.push('Homescreen')}}/> */}
+      </View>
       <PopupDialog
         visible={showPopup}
         onTouchOutside={() => {
@@ -88,6 +96,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundImage: 'url("https://wallpapers.com/images/high/green-gradient-color-background-cm7l1ky0cdimtvjw.webp")',
+    backgroundSize: 'cover',
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
   },
   tabNavigator: {
     zIndex: 10,
@@ -106,18 +121,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   form: {
-    height: 40,
+    
     borderColor: "black",
     borderWidth: 5,
     width: 200,
     marginBottom: 10,
     paddingHorizontal: 10,
+    backgroundColor: '#dcdcdc',
+    multiline: true,
   },
   text: {
-    color: '#f4511e',
-    fontSize:     20,
+    color: '#daa520',
+    fontSize:     50,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
@@ -128,44 +150,3 @@ export default Login;
 
 
   
-// const [username, setUsername] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [errors, setErrors] = useState([]);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const opacityValue = useState(new Animated.Value(0))[0];
-
-
-
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//        <TextInput>
-//         <Label>Username</Label>
-//         <Input
-//           style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-//           autoCapitalize="none"
-//           autoCompleteType="username"
-//           value={username}
-//           onChangeText={(text) => setUsername(text)}
-//         />
-//       </TextInput>
-//       <TextInput>
-//         <Label>Password</Label>
-//         <Input
-//           style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-//           secureTextEntry={true}
-//           autoCapitalize="none"
-//           autoCompleteType="password"
-//           value={password}
-//           onChangeText={(text) => setPassword(text)}
-//         />
-//       </TextInput>
-//       <TextInput>
-//         <Button
-//           title={isLoading ? "Loading..." : "Login"}
-//           onPress={handleSubmit}
-//           disabled={isLoading}
-//         />
-//       </TextInput>
-//       <Animated.View style={{ opacity: opacityValue }}>
-//         {errors.map((err) => () => <Error key={err}>{err}</Error>)}
-//       </Animated.View>

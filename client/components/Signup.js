@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
 
 
 
-function Signup({ navigation }) {
+function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
 
   function handleSubmit() {
     setErrors([]);
@@ -29,15 +31,16 @@ function Signup({ navigation }) {
     .then((r) => r.json())
     .then((data) => {
       console.log("Success:", data);
+      navigation.navigate('Login');
     })
     .catch((error) => {
       console.error("Error:", error);
     })
   }
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={styles.text}>Sign Up</Text>
-      <Button color="#f4511e" style={styles.button} title="Already have an account? Login" onPress={() => navigation.navigate('Login')}/>
+    <View style={styles.container}>
+      <Image source={require('../assets/icon2.png')} style={styles.logo} />
+      
         <Text style={styles.text}>Username</Text>
         <TextInput
           style={styles.form}
@@ -45,8 +48,9 @@ function Signup({ navigation }) {
           autoCompleteType="username"
           value={username}
           onChangeText={(text) => setUsername(text)}
+          placeholder='Username'
         />
-              <Text style={styles.text}>Password</Text>
+              
         <TextInput
           style={styles.form}
           secureTextEntry={true}
@@ -54,8 +58,9 @@ function Signup({ navigation }) {
           autoCompleteType="password"
           value={password}
           onChangeText={(text) => setPassword(text)}
+          placeholder='Password'
         />
-        <Text style={styles.text}>Confirm Password</Text>
+        
         <TextInput
          style={styles.form}
           secureTextEntry={true}
@@ -63,23 +68,39 @@ function Signup({ navigation }) {
           autoCompleteType="password"
           value={passwordConfirmation}
           onChangeText={(text) => setPasswordConfirmation(text)}
+          placeholder='Confirm Password'
         />
+        <View style={styles.buttonContainer}>
         <Button
-          color="#f4511e" style={styles.button}
+          color="#daa520" style={styles.button}
           title={isLoading ? "Loading..." : "Sign Up"}
           onPress={handleSubmit}
           disabled={isLoading}
         />
+      <Button color="#daa520" style={styles.button} title="Have an account? Login" onPress={() => navigation.navigate('Login')}/>
      
       {errors.map((error, index) => (
         <Text key={index} style={{ color: 'red' }}>
           {error}
         </Text>
       ))}
+      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundImage: 'url("https://wallpapers.com/images/high/green-gradient-color-background-cm7l1ky0cdimtvjw.webp")',
+    backgroundSize: 'cover',
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+  },
   button: {
     
     borderRadius: 15,
@@ -88,6 +109,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: 200,
     
+  },
+  buttonContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   title: {
     color: 'black',
@@ -103,12 +128,21 @@ const styles = StyleSheet.create({
     width: 200,
     marginBottom: 10,
     paddingHorizontal: 10,
+    backgroundColor: 'white',
   },
   text: {
-    color: '#f4511e',
-    fontSize: 20,
+    color: '#daa520',
+    fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 10,
+  },
+  headerText: {
+    color: '#daa520',
+    fontSize: 50,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
   },
 });
 

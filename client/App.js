@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -39,6 +39,8 @@ function App() {
       setLoggedIn
     })
   };
+
+  
   
   
   const Stack = createNativeStackNavigator();
@@ -52,21 +54,34 @@ function App() {
 
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Mealplan'>
-        <Stack.Screen name="Home" component={TabNavigator} options={{ title: "My Home", headerStyle: {
-          backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
-            fontWeight: 'bold'},
-            headerRight: () => (
-              <Button
-                onPress={() => {handleLogout()}}
-                title="Logout"
-                color="#0000"
-              />
-            )
-          
-          }}>
-          </Stack.Screen>
-        <Stack.Screen name="Login"  options={{ title: "Login", headerStyle: {
+    
+      <Stack.Navigator initialRouteName='Homescreen'>
+      <Stack.Screen
+        name="Home"
+        component={TabNavigator}
+        options={{
+          title: 'PREPP',
+          headerStyle: {
+            backgroundColor: '#696969',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerRight: () => (
+            <Button onPress={() => handleLogout()} title="Logout" color="#0000" />
+          ),
+          headerTitle: () => (
+            <Image
+              source={require('./assets/iconprepp.png')}
+              style={{ width: 100, height: 75 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen name="Login"  options={{ title: "Login", headerStyle: {
           backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
             fontWeight: 'bold',
           }
@@ -75,7 +90,8 @@ function App() {
         >
         {props=>{return <Login setU={setU} user={user} {...props}/>}}</Stack.Screen>
         <Stack.Screen name="Signup" component={Signup} options={{ title: "Signup", headerStyle: {
-        backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
+        backgroundColor: '#f4511e',} , 
+        headerTintColor: '#fff', headerTitleStyle: {
           fontWeight: 'bold',
         }
       }} />
@@ -130,8 +146,3 @@ const styles = StyleSheet.create({
 export default App;
 
 
-// still to do
-// set users to a mealplan so when you search for meals it only shows your mealplan
-// make it so no one can log in while someone is logged in
-// make the edit meals form look better and have the cancel button work
-// try to get a header that persists on all pages, with a hambuger button that opens a drawer

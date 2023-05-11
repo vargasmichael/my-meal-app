@@ -19,7 +19,7 @@ const TabNavigator = () => {
     
     <Tab.Navigator>
         <Tab.Screen 
-        name="HomeScreen" 
+        name="Home" 
         component={HomeScreen} 
         options={{
             tabBarIcon: ({ color, size }) => (
@@ -31,6 +31,7 @@ const TabNavigator = () => {
         <Tab.Screen name="Signup" component={Signup} />
         <Tab.Screen name="Meals" component={Meals} />
         <Tab.Screen name="Mealplan" component={Mealplan} />
+        <Tab.Screen name="Mealform" component={Mealform} />
         
 
     </Tab.Navigator>

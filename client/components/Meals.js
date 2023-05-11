@@ -180,12 +180,12 @@ function handleDelete() {
 
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Meals</Text>
-      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.navigate('Home')} />
+    <View style={styles.container}>
+      <Text style={styles.text}>Welcome, {currentUser.username} here are you meals!</Text>
+      {/* <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.navigate('Home')} />
       <Button color="#f4511e" style={styles.button} title="Go back" onPress={() => props.navigation.goBack()} />
       <Button color="#f4511e" style={styles.button} title="Get Meals" onPress={handleFetch} />
-      <Button color="#f4511e" style={styles.button} title="Go To Meal Plan" onPress={() => props.navigation.navigate('Mealplan')} />
+      <Button color="#f4511e" style={styles.button} title="Go To Meal Plan" onPress={() => props.navigation.navigate('Mealplan')} /> */}
       <Picker
         selectedValue={selectedCategory}
         onValueChange={handleCategoryChange}
@@ -218,9 +218,9 @@ function handleDelete() {
             <Text style={{ fontSize: 14, color: '#666', marginBottom: 5 }}>{dish.description}</Text>
             <Text style={{ fontSize: 12, color: '#999' }}>{dish.category}</Text>
             <View style={styles.buttonContainer}>
-            <Button  color="#f4511e" style={styles.button} title="Add to Meal Plan" onPress={() => handleAddToMealPlan(dish)} onPressIn={() => handlesession()
+            <Button  color="#daa520" style={styles.button} title="Add to Meal Plan" onPress={() => handleAddToMealPlan(dish)} onPressIn={() => handlesession()
             }/>
-            <Button  color="#f4511e" style={styles.button} title="Edit Meal" onPress={() => handleEditMeal(dish)} />
+            <Button  color="#daa520" style={styles.button} title="Edit Meal" onPress={() => handleEditMeal(dish)} />
             </View>
           </View>
         ))}
@@ -254,6 +254,14 @@ function handleDelete() {
 
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundImage: 'url("https://wallpapers.com/images/high/green-gradient-color-background-cm7l1ky0cdimtvjw.webp")',
+    backgroundSize: 'cover',
+    backgroundColor: '#00bfff',
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -264,7 +272,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     width: 200,
-  }
+  },
+  text: {
+    color: `#black`,
+    fontSize: 30, 
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#daa520',
+  },
 });
 
 

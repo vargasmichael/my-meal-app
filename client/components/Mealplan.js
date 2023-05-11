@@ -2,7 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 
 import { Text, Card, Button, Icon } from '@rneui/themed';
-import { View, StyleSheet, Picker, ScrollView} from 'react-native';
+import { View, StyleSheet, ScrollView} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import EditMealPlanForm from './Editmealplanform';
 import { useFonts } from 'expo-font';
 
@@ -198,8 +199,8 @@ function Mealplan(props) {
               <Text style={styles.category}>{meal.category}</Text>
               <Text style={styles.description}>{meal.description}</Text>
               <View style={styles.buttonContainer}>
-              <Button color="#f4511e" style={styles.button} title="Edit Plan" onPress={handleEditPlan} />
-              <Button color="#f4511e" style={styles.button} title="Delete Plan" onPress={() => handleDeletePlan(mp)} />
+              <Button color="#daa520" style={styles.button} title="Edit Plan" onPress={handleEditPlan} />
+              <Button color="#daa520" style={styles.button} title="Clear Meal" onPress={() => handleDeletePlan(mp)} />
               </View>
             </>
           )}
@@ -217,9 +218,9 @@ function Mealplan(props) {
   
 
    return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={styles.text}>Meal Plan for {currentUser.username}</Text>
-      <Button
+    <View style={styles.container}>
+      <Text style={styles.text}>Hey, {currentUser.username} Here Is Your Meal Plan!</Text>
+      {/* <Button
         color="#f4511e"
         style={styles.button}
         title="Go to Home"
@@ -236,7 +237,7 @@ function Mealplan(props) {
         style={styles.button}
         title="Get Meal Plan"
         onPress={() => handleFetch(currentUser.id)}
-      />
+      /> */}
       <Picker
         selectedValue={selectedCategory}
         onValueChange={handleCategoryChange}
@@ -256,6 +257,13 @@ function Mealplan(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundImage: 'url("https://wallpapers.com/images/high/green-gradient-color-background-cm7l1ky0cdimtvjw.webp")',
+    backgroundSize: 'cover',
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between'
@@ -283,10 +291,11 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   text: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 10,
-    fontFamily: '',
+    color: '#daa520',
+    
   },
   card: {
     // width: '100%',
