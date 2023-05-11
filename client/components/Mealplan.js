@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 import { View, StyleSheet, Picker, ScrollView} from 'react-native';
 import EditMealPlanForm from './Editmealplanform';
+import { useFonts } from 'expo-font';
 
 
 function Mealplan(props) {
@@ -61,14 +62,37 @@ function Mealplan(props) {
     setselectedCategory(value);
   }
   
+  
+
   let filteredPlans = mealplan;
   if (selectedCategory !== 'All') {
-    filteredPlans = mealplan.filter(plan => plan.day_of_week=== selectedCategory)
+    filteredPlans = mealplan.filter(plan => plan.day_of_week === selectedCategory);
   }
-  console.log(mealplan)
+
+  filteredPlans.sort((a, b) => {
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayA = daysOfWeek.indexOf(a.day_of_week);
+    const dayB = daysOfWeek.indexOf(b.day_of_week);
+
+    if (dayA === dayB) {
+      const mealTimeA = a.meal_time.toLowerCase();
+      const mealTimeB = b.meal_time.toLowerCase();
+      if (mealTimeA < mealTimeB) {
+        return -1;
+      }
+      if (mealTimeA > mealTimeB) {
+        return 1;
+      }
+      return 0;
+    }
+
+    return dayA - dayB;
+  });
 
 
   
+
+
   function MealplanCard({ mp }) {
     // console.log(mp)
     const [meal, setMeal] = useState({});
@@ -192,7 +216,7 @@ function Mealplan(props) {
   
   
 
-  return (
+   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={styles.text}>Meal Plan for {currentUser.username}</Text>
       <Button
@@ -257,6 +281,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2,
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    fontFamily: '',
   },
   card: {
     // width: '100%',
