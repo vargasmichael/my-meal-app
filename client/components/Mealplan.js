@@ -173,9 +173,10 @@ function Mealplan(props) {
               <Text style={styles.description}>{meal.name}</Text>
               <Text style={styles.category}>{meal.category}</Text>
               <Text style={styles.description}>{meal.description}</Text>
+              <View style={styles.buttonContainer}>
               <Button color="#f4511e" style={styles.button} title="Edit Plan" onPress={handleEditPlan} />
               <Button color="#f4511e" style={styles.button} title="Delete Plan" onPress={() => handleDeletePlan(mp)} />
-
+              </View>
             </>
           )}
         </View>
@@ -193,7 +194,7 @@ function Mealplan(props) {
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={styles.text}>Meal Plan</Text>
+      <Text style={styles.text}>Meal Plan for {currentUser.username}</Text>
       <Button
         color="#f4511e"
         style={styles.button}
@@ -231,6 +232,10 @@ function Mealplan(props) {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   button: {
     borderRadius: 15,
     padding: 10,

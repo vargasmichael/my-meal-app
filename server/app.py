@@ -339,11 +339,11 @@ class Meal_Plan_By_Id(Resource):
     def delete(self, id):
         meal_plan = Meal_Plan.query.filter_by(id=id).first()
         if not meal_plan:
-            return make_response("Meal Plan not found", 404)
-        
+            return jsonify({"message": "Meal Plan not found"}), 404
+
         db.session.delete(meal_plan)
         db.session.commit()
-        return make_response("Meal Plan deleted", 200)
+        return jsonify({"message": "Meal Plan deleted"}), 200
     
     def patch(self, id):
         meal_plan = Meal_Plan.query.filter_by(id=id).first()

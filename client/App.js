@@ -52,7 +52,7 @@ function App() {
 
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Mealplan'>
+      <Stack.Navigator initialRouteName='HomeScreen'>
         <Stack.Screen name="Home" component={TabNavigator} options={{ title: "My Home", headerStyle: {
           backgroundColor: '#f4511e',} , headerTintColor: '#fff', headerTitleStyle: {
             fontWeight: 'bold'},
