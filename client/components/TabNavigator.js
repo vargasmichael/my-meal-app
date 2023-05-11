@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FcHome } from "react-icons/fc";
 import Login from './Login';
 import Signup from './Signup';
 import Meals from './Meals';
@@ -17,7 +18,15 @@ const TabNavigator = () => {
     return (
     
     <Tab.Navigator>
-        <Tab.Screen name="HomeScreen" component={HomeScreen} />
+        <Tab.Screen 
+        name="HomeScreen" 
+        component={HomeScreen} 
+        options={{
+            tabBarIcon: ({ color, size }) => (
+                <FcHome color={color} size={size} />
+            ),
+        }}
+    />
         <Tab.Screen name="Login" component={Login} />
         <Tab.Screen name="Signup" component={Signup} />
         <Tab.Screen name="Meals" component={Meals} />

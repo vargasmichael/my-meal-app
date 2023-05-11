@@ -117,7 +117,7 @@ const [editMeal, setEditMeal] = useState(false);
 
 function handleEditMeal(dish) {
   setSelectedMeal(dish);
-  setEditMeal(true);
+  setEditMeal(dish.id);
 }
 
 function handleSaveChanges(newDish) {
@@ -182,7 +182,7 @@ function handleDelete() {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Meals</Text>
-      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.navigate('Homescreen')} />
+      <Button color="#f4511e" style={styles.button} title="Go to Home" onPress={() => props.navigation.navigate('Home')} />
       <Button color="#f4511e" style={styles.button} title="Go back" onPress={() => props.navigation.goBack()} />
       <Button color="#f4511e" style={styles.button} title="Get Meals" onPress={handleFetch} />
       <Button color="#f4511e" style={styles.button} title="Go To Meal Plan" onPress={() => props.navigation.navigate('Mealplan')} />
@@ -211,7 +211,7 @@ function handleDelete() {
             shadowRadius: 1.41,
             elevation: 2,
           }}>
-            {editMeal && (
+            {editMeal ===dish.id && (
         <Editmealform dish={selectedMeal} onSaveChanges={handleSaveChanges} onDelete={handleDelete}  />
       )}
             <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{dish.name}</Text>

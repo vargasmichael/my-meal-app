@@ -10,6 +10,10 @@ function Mealplan(props) {
   const [mealplan, setMealplan] = useState([]);
   const [currentUser, setCurrentUser] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedCategory, setselectedCategory] = useState('All')
+  const categories = ['All', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+ 
   
   const [selectedDayOfWeek, setSelectedDayOfWeek] = useState('Monday');
   const [selectedMealTime, setSelectedMealTime] = useState('Breakfast');
@@ -52,6 +56,16 @@ function Mealplan(props) {
       .finally(() => setLoading(false));
   }
 
+   // this is to change the category
+   function handleCategoryChange(value) {
+    setselectedCategory(value);
+  }
+  
+  let filteredPlans = mealplan;
+  if (selectedCategory !== 'All') {
+    filteredPlans = mealplan.filter(plan => plan.day_of_week=== selectedCategory)
+  }
+  console.log(mealplan)
 
 
   
@@ -59,10 +73,11 @@ function Mealplan(props) {
     // console.log(mp)
     const [meal, setMeal] = useState({});
     const [showEditForm, setShowEditForm] = useState(false);
-    const categories = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const [selectedPlan, setSelectedPlan] = useState(null);
+   
+    const [editPlan, setEditPlan] = useState(false);
     
-    
+    // this will grab all the meal plans associated to the user
     useEffect(() => {
       fetch(`/api/meals/${mp.meal_id}`)
       .then(response => response.json())
@@ -75,14 +90,15 @@ function Mealplan(props) {
       });
     }, [mp.meal_id]);
     
-  // this is to edit the meal plan
-  const [editPlan, setEditPlan] = useState(false);
+    
+   
+    // this is to edit the meal plan
 
-  function handleEditPlan(mp) {
-        setEditPlan(true);
-        setSelectedPlan(mp);
-      }
-
+    function handleEditPlan(mp) {
+          setEditPlan(true);
+          setSelectedPlan(mp);
+        }
+  // this is to save the edited version of the meal plan
       function handleSavePlan(newPlan) {
         console.log(newPlan)
         const updatedPlan = mealplan.map((mp) => {
@@ -121,25 +137,26 @@ function Mealplan(props) {
           });
       }
       
-      function handleDeletePlan(newPlan) {
-        const updatedPlan = mealplan.filter(mp => mp.id !== selectedPlan.id);
-      
+      // this is to delete the meal from your plan
+      function handleDeletePlan(mp) {
+        const updatedPlan = mealplan.filter(plan => plan.id !== mp.id);
+    
         setMealplan(updatedPlan);
         setEditPlan(false);
         setSelectedPlan(null);
-      
-        fetch(`/api/meal_plan/${selectedPlan.id}`, {
+    
+        fetch(`/api/meal_plan/${mp.id}`, {
           method: 'DELETE',
         })
-          .then(response => response.json())
-          .then(data => {
+        .then(response => response.json())
+        .then(data => {
             console.log('Success:', data);
             handleFetch(currentUser.id);
-          })
-          .catch(error => {
+        })
+        .catch(error => {
             console.log('Error deleting meal plan', error);
-          });
-      }
+        });
+    }
       
 
 
@@ -157,7 +174,8 @@ function Mealplan(props) {
               <Text style={styles.category}>{meal.category}</Text>
               <Text style={styles.description}>{meal.description}</Text>
               <Button color="#f4511e" style={styles.button} title="Edit Plan" onPress={handleEditPlan} />
-              <Button color="#f4511e" style={styles.button} title="Delete Plan" onPress={handleDeletePlan} />
+              <Button color="#f4511e" style={styles.button} title="Delete Plan" onPress={() => handleDeletePlan(mp)} />
+
             </>
           )}
         </View>
@@ -194,11 +212,20 @@ function Mealplan(props) {
         title="Get Meal Plan"
         onPress={() => handleFetch(currentUser.id)}
       />
+      <Picker
+        selectedValue={selectedCategory}
+        onValueChange={handleCategoryChange}
+        style={{ width: '25%', height: 50}}
+        >
+         {categories.map(category => (
+          <Picker.Item key={category} label={category} value={category} />
+        ))}
+      </Picker>
+      
       {loading && <Text style={styles.loading}>Loading...</Text>}
       <ScrollView style={{ maxHeight: '80%', marginTop: 20, paddingHorizontal: 10 }}>
-      {mealplan && mealplan.length > 0 && mealplan.map(mp => mp && <MealplanCard key={mp.id} mp={mp} />)}
-
-      </ScrollView>
+      {filteredPlans && filteredPlans.length > 0 && filteredPlans.map(mp => mp && <MealplanCard key={mp.id} mp={mp} />)}
+    </ScrollView>
     </View>
   );
 }
