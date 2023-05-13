@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   form: {
-    
+    height: 40,
     borderColor: "black",
     borderWidth: 5,
     width: 200,

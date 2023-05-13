@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     width: 200,
     marginBottom: 10,
     paddingHorizontal: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#dcdcdc',
   },
   text: {
     color: '#daa520',

@@ -56,8 +56,8 @@ function EditMealPlanForm({ mp, onSaveChanges, onDelete }) {
         </Picker>
       </View>
       <View style={styles.buttonContainer}>
-        <Button color="#f4511e" style={styles.button} title="Save" onPress={handleSaveChanges} />
-        <Button color="#f4511e" style={styles.button} title="Delete" onPress={handleDelete} />
+        <Button color="#daa520" style={styles.button} title="Save" onPress={handleSaveChanges} />
+        <Button color="#daa520" style={styles.button} title="Delete" onPress={handleDelete} />
       </View>
     </View>
   );
@@ -77,18 +77,18 @@ const styles = StyleSheet.create({
   },
   formMealTime: {
       height: 40,
-      borderColor: "black",
-      borderWidth: 1,
+      // borderColor: "black",
+      // borderWidth: 1,
       width: 400,
-      marginBottom: 10,
+     
       paddingHorizontal: 10,
   },
   formDayOfWeek: {
       height: 100,
-      borderColor: "black",
-      borderWidth: 1,
+      // borderColor: "black",
+      // borderWidth: 1,
       width: 500,
-      marginBottom: 10,
+      
       paddingHorizontal: 10,
   },
 });

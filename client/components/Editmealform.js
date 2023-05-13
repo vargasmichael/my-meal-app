@@ -59,8 +59,8 @@ return (
         <Picker.Item label="Snack" value="Snack" />
       </Picker>
       <View style={styles.buttonContainer}>
-      <Button color="#f4511e" style={styles.button} title="Save Changes" onPress={handleSaveChanges} />
-      <Button color="#f4511e" style={styles.button} title="Delete" onPress={handleDelete} />
+      <Button color="#daa520" style={styles.button} title="Save Changes" onPress={handleSaveChanges} />
+      <Button color="#daa520" style={styles.button} title="Delete" onPress={handleDelete} />
       </View>
     </View>
   );

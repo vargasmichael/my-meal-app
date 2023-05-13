@@ -43,13 +43,14 @@ function Mealplan(props) {
         console.log('Error checking session', error);
       });
   }
+  
   function handleFetch(id) {
     const url = id ? `/api/meal_plan/${id}` : '/api/meal_plan';
     setLoading(true);
     return fetch(url)
       .then(response => response.json())
       .then(plan => {
-        console.log(plan);
+        // console.log(plan);
         setMealplan(plan);
       })
       .catch(error => {
@@ -62,22 +63,26 @@ function Mealplan(props) {
    function handleCategoryChange(value) {
     setselectedCategory(value);
   }
-  
+  useEffect(() => {
+    handleFetch();
+  }, []);
   
 
-  let filteredPlans = mealplan;
+  let filteredPlans = [];
   if (selectedCategory !== 'All') {
     filteredPlans = mealplan.filter(plan => plan.day_of_week === selectedCategory);
+  } else {
+    filteredPlans = mealplan;
   }
-
+  
   filteredPlans.sort((a, b) => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const dayA = daysOfWeek.indexOf(a.day_of_week);
     const dayB = daysOfWeek.indexOf(b.day_of_week);
-
+  
     if (dayA === dayB) {
-      const mealTimeA = a.meal_time.toLowerCase();
-      const mealTimeB = b.meal_time.toLowerCase();
+      const mealTimeA = a.meal_time ? a.meal_time.toLowerCase() : '';
+      const mealTimeB = b.meal_time ? b.meal_time.toLowerCase() : '';
       if (mealTimeA < mealTimeB) {
         return -1;
       }
@@ -86,11 +91,9 @@ function Mealplan(props) {
       }
       return 0;
     }
-
+  
     return dayA - dayB;
   });
-
-
   
 
 
@@ -104,15 +107,17 @@ function Mealplan(props) {
     
     // this will grab all the meal plans associated to the user
     useEffect(() => {
-      fetch(`/api/meals/${mp.meal_id}`)
-      .then(response => response.json())
-      .then(meal => {
-        //  console.log('meal', meal);
-        setMeal(meal);
-      })
-      .catch(error => {
-        // console.log('Error getting meal', error);
-      });
+      if (mp.meal_id) {  // Check that mp.meal_id is not undefined
+        fetch(`/api/meals/${mp.meal_id}`)
+        .then(response => response.json())
+        .then(meal => {
+          //  console.log('meal', meal);
+          setMeal(meal);
+        })
+        .catch(error => {
+          // console.log('Error getting meal', error);
+        });
+      }
     }, [mp.meal_id]);
     
     

@@ -69,22 +69,16 @@ function Meals(props) {
 
   function handleAddToMealPlan(dish) {
     handlesession();
-    // console.log(dish);
     const mealPlanData = {
-      // user_id: user.id,
       meal_id: dish.id,
       user_id: currentUser.id,
-      
-       
     };
   
     fetch(`/api/meals/${dish.id}`, {
       method: 'GET',
-     })
+    })
     .then(response => response.json())
     .then(resource => {
-      // console.log(resource);
-      // console.log(mealPlanData)
       fetch(`/api/meal_plan/${currentUser.id}`, {
         method: 'POST',
         headers: {
@@ -95,14 +89,12 @@ function Meals(props) {
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
+        navigation.navigate('Mealplan');  // navigate to MealPlan page
         return data;
       })
-    }
-      
-    )
-    
-    
+    })
   }
+  
 
   function handleCategoryChange(value) {
     setSelectedCategory(value);
@@ -226,7 +218,7 @@ function handleDelete() {
         ))}
      </ScrollView>
      <View style={{ paddingHorizontal: 10 }}>
-       <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>Selected Meals</Text>
+       <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 20 }}></Text>
        {selectedDishes.map(dish => (
          <View key={dish.id} style={{ 
            backgroundColor: '#fff',
@@ -260,7 +252,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundImage: 'url("https://wallpapers.com/images/high/green-gradient-color-background-cm7l1ky0cdimtvjw.webp")',
     backgroundSize: 'cover',
-    backgroundColor: '#00bfff',
+    backgroundColor: '#dcdcdc',
   },
   buttonContainer: {
     flexDirection: 'row',
